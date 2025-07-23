@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Wish from Jaglate!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom right, #f8e7d2, #d2a679); /* Chocolate-like gradient */
+            display: flex;
+            flex-direction: column; /* Arrange header, main, footer vertically */
+            justify-content: space-between; /* Push header to top, footer to bottom */
+            min-height: 100vh;
+            padding: 0; /* Remove body padding to allow header/footer to span full width */
+            margin: 0;
+            box-sizing: border-box;
+            overflow-x: hidden; /* Hide horizontal overflow */
+            position: relative; /* For background pattern */
+        }
+
+        /* Subtle chocolate chip background pattern */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.05' fill-rule='evenodd'%3E%3Ccircle cx='30' cy='30' r='10'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: repeat;
+            opacity: 0.1; /* Very subtle */
+            z-index: 0;
+            pointer-events: none; /* Allow clicks through */
+        }
+
+        main {
+            flex-grow: 1; /* Allow main content to take available space */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px; /* Add padding to main content area */
+            z-index: 1; /* Ensure main content is above background pattern */
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 700px;
+            text-align: center;
+            position: relative;
+            z-index: 10; /* Ensure container is above confetti */
+            animation: fadeInScale 0.7s ease-out forwards; /* Entry animation */
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Message box styling within the popup */
+        .message-box {
+            background-color: #fff8e1; /* Creamy background (default) */
+            border: 2px dashed #b8860b; /* Gold/bronze dashed border */
+            padding: 20px; /* Slightly reduced padding */
+            border-radius: 12px;
+            margin-top: 30px;
+            font-family: 'Lora', serif; /* New font for the message */
+            font-size: 1.25em; /* Slightly larger font */
+            color: #4a2c2a; /* Dark chocolate text (default) */
+            line-height: 1.6; /* Optimal line height for readability */
+            text-align: center; /* Center align message for a more "wish" feel */
+            word-wrap: break-word;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.3s ease-in-out; /* Enhanced transitions */
+            cursor: pointer; /* Indicate interactivity */
+            text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.05); /* Subtle text shadow */
+            position: relative; /* For image overlay */
+            overflow: hidden; /* For images */
+            display: flex; /* Flexbox for content alignment */
+            flex-direction: column; /* Stack image and text */
+            align-items: center; /* Center horizontally */
+            justify-content: center; /* Center vertically if space allows */
+            min-height: 200px; /* Ensure a decent size */
+            box-sizing: border-box; /* Include padding in height calculation */
+        }
+        .message-box:hover {
+            transform: translateY(-5px) scale(1.01); /* More pronounced lift and slight scale */
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.1), 0 8px 20px rgba(0,0,0,0.15); /* Stronger outer shadow */
+            background-color: #fffaf0; /* Slightly lighter background on hover (default) */
+        }
+
+        .message-box img {
+            max-width: 100%;
+            height: auto;
+            max-height: 150px; /* Limit image height */
+            border-radius: 8px;
+            margin-bottom: 15px; /* Space between image and text */
+            object-fit: contain; /* Ensures image fits without cropping itself */
+            border: 1px solid rgba(0,0,0,0.1); /* Subtle border for images */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .message-content-wrapper {
+            position: relative; /* To allow text to sit on top of background image */
+            z-index: 2; /* Ensures text is above background image */
+            padding: 5px; /* Small padding inside wrapper if needed */
+            word-break: break-word;
+        }
+
+        .dancing-script {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background-color: #6a3805; /* Dark chocolate */
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+        }
+        .navbar-brand {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.2em;
+            font-weight: 700;
+            color: #ffd700; /* Gold */
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            text-decoration: none;
+            margin-right: 20px; /* Space from links */
+        }
+        .navbar-links {
+            display: flex;
+            flex-wrap: wrap; /* Allow links to wrap */
+            gap: 15px; /* Space between links */
+        }
+        .navbar-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .navbar-links a:hover {
+            color: #ffd700; /* Gold on hover */
+        }
+
+        /* Mobile specific adjustments for Navbar */
+        @media (max-width: 640px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px;
+            }
+            .navbar-brand {
+                margin-bottom: 10px;
+                font-size: 1.8em;
+            }
+            .navbar-links {
+                width: 100%;
+                justify-content: center;
+                gap: 10px;
+            }
+            .navbar-links a {
+                margin: 0 5px; /* Adjust margin for smaller screens */
+                font-size: 0.9em;
+            }
+            .container {
+                padding: 25px; /* Reduce padding on mobile */
+            }
+            .popup-content {
+                padding: 25px;
+            }
+            .popup-header {
+                font-size: 2em; /* Smaller header in popup on mobile */
+            }
+            .emoji-icon {
+                font-size: 2.5em;
+            }
+            .message-box { /* Adjust message box font size for mobile */
+                font-size: 1.1em;
+                padding: 20px;
+            }
+        }
+
+        /* Footer Styles */
+        .footer {
+            background-color: #6a3805; /* Dark chocolate */
+            color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9em;
+            width: 100%;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15);
+        }
+        .footer a {
+            color: #ffd700;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Popup Styles */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .popup-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .popup-content {
+            background: linear-gradient(to top left, #fef0c1, #ffe082); /* Golden, celebratory */
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+            position: relative;
+            border: 5px solid #b8860b; /* Gold border */
+            overflow: hidden; /* For confetti */
+        }
+        .popup-overlay.active .popup-content {
+            transform: scale(1);
+        }
+        .popup-close-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #d32f2f;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+        .popup-close-button:hover {
+            background-color: #b71c1c;
+        }
+        .popup-header {
+            font-size: 2.8em;
+            color: #8b4513; /* Saddle brown */
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            line-height: 1.2;
+        }
+        .emoji-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+            display: block; /* Ensures it takes full width */
+        }
+
+        /* Confetti effect */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ffd700; /* Gold */
+            opacity: 0;
+            animation: confetti-fall 3s ease-out forwards;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(500px) rotate(720deg); opacity: 0; }
+        }
+
+        /* Funky button styles */
+        .funky-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 25px;
+            border-radius: 9999px; /* Pill shape */
+            font-weight: 600;
+            font-size: 1.05em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+        }
+
+        .funky-button-primary {
+            background: linear-gradient(to right, #6a3805, #8b4513); /* Chocolate gradient */
+            color: #fff;
+            border: 2px solid #b8860b; /* Gold border */
+        }
+        .funky-button-primary:hover {
+            background: linear-gradient(to right, #8b4513, #6a3805);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <a href="{% url 'generate_qr_page' %}" class="navbar-brand">Jaglate Wishes</a>
+        <nav class="navbar-links">
+            <a href="#">About Us</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-4 sm:mb-6">
+                <span class="dancing-script text-4xl sm:text-5xl text-amber-700 block mb-2">Sweet Delights Await!</span>
+                Your Special Wish
+            </h1>
+
+            {% if qr_data.message %}
+                <p class="text-xl sm:text-2xl text-gray-700 mt-8">
+                    Your sweet message is waiting!
+                    <br>
+                    <span class="text-sm sm:text-base text-gray-500">(Click the button below to reveal your delightful wish!)</span>
+                </p>
+                <button onclick="showPopup()" class="funky-button funky-button-primary mt-8">
+                    🎁 Reveal My Sweet Wish!
+                </button>
+            {% else %}
+                <p class="text-xl sm:text-2xl text-gray-700 mt-8">No message has been set for this QR code yet.</p>
+                <a href="{% url 'enter_message' qr_data.unique_key %}" class="funky-button funky-button-primary mt-8">
+                    🍫 Enter a Sweet Message
+                </a>
+            {% endif %}
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Jaglate. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+    </footer>
+
+    {% if qr_data.message %}
+    <div id="birthdayPopupOverlay" class="popup-overlay">
+        <div class="popup-content">
+            <button class="popup-close-button" onclick="closePopup()">✖</button>
+            <span class="emoji-icon">🎉🎂🍫</span>
+            <h2 class="popup-header dancing-script">A Sweet Surprise for You!</h2>
+            <div id="messageBox" class="message-box">
+                <div class="message-content-wrapper" id="messageContentWrapper">
+                    {{ qr_data.message }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <script>
+        const popupOverlay = document.getElementById('birthdayPopupOverlay');
+        const messageBox = document.getElementById('messageBox');
+        const messageContentWrapper = document.getElementById('messageContentWrapper');
+
+        // Data from Django context, directly rendered into JavaScript
+        const messageData = {
+            message: "{{ qr_data.message|escapejs }}",
+            textColor: "{{ qr_data.text_color|escapejs }}",
+            backgroundType: "{{ qr_data.background_type|escapejs }}",
+            backgroundValue: "{{ qr_data.background_value|escapejs }}",
+            attachedImage: "{{ qr_data.attached_image|escapejs }}"
+        };
+
+        function applyMessageStyles() {
+            if (messageBox) {
+                // Set text color for the wrapper
+                messageContentWrapper.style.color = messageData.textColor;
+
+                // Clear previous dynamic styles to avoid conflicts on re-open
+                messageBox.style.backgroundColor = '';
+                messageBox.style.backgroundImage = '';
+                messageBox.style.border = '2px dashed #b8860b'; // Reapply default border if it was changed
+
+                messageContentWrapper.style.backgroundColor = '';
+                messageContentWrapper.style.padding = '';
+                messageContentWrapper.style.borderRadius = '';
+
+                // Remove any previously added image
+                const existingImage = messageBox.querySelector('.dynamic-attached-image');
+                if (existingImage) {
+                    existingImage.remove();
+                }
+
+                if (messageData.attachedImage) {
+                    // If an image is attached, set it inside the message box
+                    const imgElement = document.createElement('img');
+                    imgElement.src = messageData.attachedImage;
+                    imgElement.alt = "Attached image";
+                    imgElement.classList.add('dynamic-attached-image'); // Add a class to easily find and remove
+                    messageBox.prepend(imgElement); // Add image before the message content
+
+                    // Adjust message box background for readability with attached image
+                    messageBox.style.backgroundColor = 'rgba(255, 255, 255, 0.8)'; // Semi-transparent white
+                    messageContentWrapper.style.backgroundColor = 'rgba(255, 255, 255, 0.7)'; // Background for text on image
+                    messageContentWrapper.style.padding = '10px 15px';
+                    messageContentWrapper.style.borderRadius = '8px';
+
+                } else if (messageData.backgroundType === 'color') {
+                    messageBox.style.backgroundColor = messageData.backgroundValue;
+                } else if (messageData.backgroundType === 'image') {
+                    messageBox.style.backgroundImage = `url('${messageData.backgroundValue}')`;
+                    messageBox.style.backgroundSize = 'cover';
+                    messageBox.style.backgroundPosition = 'center';
+                    messageBox.style.backgroundColor = 'transparent'; // Ensure color doesn't interfere
+                    messageContentWrapper.style.backgroundColor = 'rgba(255, 255, 255, 0.7)'; // Background for text on image
+                    messageContentWrapper.style.padding = '10px 15px';
+                    messageContentWrapper.style.borderRadius = '8px';
+                }
+            }
+        }
+
+        function showPopup() {
+            if (popupOverlay) {
+                applyMessageStyles(); // Apply styles right before showing the popup
+                popupOverlay.classList.add('active');
+                createConfetti();
+            }
+        }
+
+        function closePopup() {
+            if (popupOverlay) {
+                popupOverlay.classList.remove('active');
+                // Optional: Clear any dynamic elements if you don't want them persisting
+                const existingImage = messageBox.querySelector('.dynamic-attached-image');
+                if (existingImage) {
+                    existingImage.remove();
+                }
+                // Reset messageBox and wrapper styles to their default CSS values
+                // Or you can explicitly set them to empty strings to revert to CSS
+                messageBox.style.backgroundColor = '';
+                messageBox.style.backgroundImage = '';
+                messageBox.style.border = ''; // Revert to initial CSS
+                messageContentWrapper.style.backgroundColor = '';
+                messageContentWrapper.style.padding = '';
+                messageContentWrapper.style.borderRadius = '';
+                messageContentWrapper.style.color = ''; // Revert text color to initial CSS
+            }
+        }
+
+        function createConfetti() {
+            const popupContent = document.querySelector('.popup-content');
+            if (!popupContent) return;
+
+            // Clear existing confetti to prevent accumulation on re-open
+            popupContent.querySelectorAll('.confetti').forEach(c => c.remove());
+
+            for (let i = 0; i < 50; i++) { // Generate 50 confetti pieces
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = `${Math.random() * 100}%`;
+                // Use chocolate/gold/cream colors for confetti
+                const colors = ['#ffd700', '#b8860b', '#6a3805', '#fef0c1'];
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = `${Math.random() * 0.5}s`; // Stagger animation
+                popupContent.appendChild(confetti);
+
+                // Remove confetti after animation to prevent DOM bloat
+                confetti.addEventListener('animationend', () => {
+                    confetti.remove();
+                });
+            }
+        }
+    </script>
+</body>
+</html>

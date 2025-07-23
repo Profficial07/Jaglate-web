@@ -1,0 +1,1 @@
+web: gunicorn qr_wish_generator_project.wsgi:application --bind 0.0.0.0:$PORT

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Wish Generator - Jaglate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom right, #f8e7d2, #d2a679); /* Chocolate-like gradient */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.05' fill-rule='evenodd'%3E%3Ccircle cx='30' cy='30' r='10'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: repeat;
+            opacity: 0.1;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        main {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center; /* Center vertically */
+            padding: 20px;
+            z-index: 1;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            animation: fadeInScale 0.7s ease-out forwards;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .qr-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+            justify-items: center; /* Center items in the grid */
+        }
+        .qr-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px; /* Slightly more rounded */
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .qr-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .qr-item img {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            object-fit: contain;
+            border: 1px solid #ddd; /* Subtle border for image */
+        }
+        .download-button {
+            background: linear-gradient(to right, #4CAF50, #45a049); /* Green gradient */
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .download-button:hover {
+            background: linear-gradient(to right, #45a049, #4CAF50);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transform: translateY(-1px);
+        }
+
+        /* Navbar Styles (copied from display_message.html) */
+        .navbar {
+            background-color: #6a3805; /* Dark chocolate */
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            flex-wrap: wrap;
+        }
+        .navbar-brand {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.2em;
+            font-weight: 700;
+            color: #ffd700; /* Gold */
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            text-decoration: none;
+            margin-right: 20px;
+        }
+        .navbar-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .navbar-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .navbar-links a:hover {
+            color: #ffd700;
+        }
+
+        /* Footer Styles (copied from display_message.html) */
+        .footer {
+            background-color: #6a3805;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9em;
+            width: 100%;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15);
+        }
+        .footer a {
+            color: #ffd700;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Mobile specific adjustments for Navbar, Container, etc. */
+        @media (max-width: 640px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px;
+            }
+            .navbar-brand {
+                margin-bottom: 10px;
+                font-size: 1.8em;
+            }
+            .navbar-links {
+                width: 100%;
+                justify-content: center;
+                gap: 10px;
+            }
+            .navbar-links a {
+                margin: 0 5px;
+                font-size: 0.9em;
+            }
+            .container {
+                padding: 25px; /* Reduce padding on mobile */
+            }
+            .qr-grid {
+                grid-template-columns: 1fr; /* Stack QR items on small screens */
+            }
+            .qr-item {
+                width: 100%; /* Full width for stacked items */
+                max-width: 200px; /* Limit individual item width */
+            }
+        }
+
+        /* Funky button for Generate QR Codes */
+        .funky-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 25px;
+            border-radius: 9999px; /* Pill shape */
+            font-weight: 600;
+            font-size: 1.05em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+        }
+
+        .funky-button-primary {
+            background: linear-gradient(to right, #6a3805, #8b4513); /* Chocolate gradient */
+            color: #fff;
+            border: 2px solid #b8860b; /* Gold border */
+        }
+        .funky-button-primary:hover {
+            background: linear-gradient(to right, #8b4513, #6a3805);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <a href="{% url 'generate_qr_page' %}" class="navbar-brand">Jaglate Wishes</a>
+        <nav class="navbar-links">
+            <a href="{% url 'generate_qr_page' %}">Generate QR</a>
+            <a href="#">About Us</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1 class="text-3xl sm:text-4xl font-bold text-center text-gray-800 mb-8">
+                <span class="dancing-script text-4xl sm:text-5xl text-amber-700 block mb-2">Craft Your Wishes!</span>
+                QR Wish Generator
+            </h1>
+
+            {% if error %}
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md relative mb-4" role="alert">
+                    <strong class="font-bold">Error!</strong>
+                    <span class="block sm:inline">{{ error }}</span>
+                </div>
+            {% endif %}
+
+            <form method="post" action="{% url 'generate_qr_codes' %}" class="flex flex-col md:flex-row items-center justify-center gap-4 mb-8">
+                {% csrf_token %}
+                <label for="limit" class="text-lg text-gray-700">Number of QR Codes:</label>
+                <select id="limit" name="limit" onchange="toggleCustomInput()" class="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="custom">Enter Custom</option>
+                </select>
+                <input type="number" id="custom_limit" name="limit" placeholder="Enter custom limit" class="hidden p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" min="1" max="100">
+                <button type="submit" class="funky-button funky-button-primary">
+                    Generate QR Codes
+                </button>
+            </form>
+
+            {% if generated_qrs %}
+                <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Your Generated QR Codes:</h2>
+                <div class="qr-grid">
+                    {% for qr in generated_qrs %}
+                        <div class="qr-item">
+                            <p class="text-gray-900 font-medium mb-2">{{ qr.unique_key }}</p>
+                            {% if qr.qr_image %}
+                                <img src="{{ qr.qr_image.url }}" alt="QR Code for {{ qr.unique_key }}">
+                                <a href="{% url 'download_qr' qr.unique_key %}" class="download-button mt-3">Download</a>
+                            {% else %}
+                                <p class="text-red-500 text-sm">Image not available</p>
+                            {% endif %}
+                            <p class="text-gray-600 text-sm mt-2">Scan to enter message</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Jaglate. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+    </footer>
+
+    <script>
+        function toggleCustomInput() {
+            const limitSelect = document.getElementById('limit');
+            const customLimitInput = document.getElementById('custom_limit');
+            if (limitSelect.value === 'custom') {
+                limitSelect.removeAttribute('name');
+                customLimitInput.setAttribute('name', 'limit');
+                customLimitInput.classList.remove('hidden');
+                customLimitInput.focus();
+            } else {
+                limitSelect.setAttribute('name', 'limit');
+                customLimitInput.removeAttribute('name');
+                customLimitInput.classList.add('hidden');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const limitSelect = document.getElementById('limit');
+            const customLimitInput = document.getElementById('custom_limit');
+            if (customLimitInput.value && customLimitInput.value !== '') {
+                limitSelect.value = 'custom';
+                toggleCustomInput();
+            }
+        });
+    </script>
+</body>
+</html>
