@@ -8,6 +8,8 @@ from django.urls import reverse
 from .models import QRCodeData,BACKGROUND_TYPE_CHOICES 
 import io
 import os
+import json
+import base64
 from django.core.files.base import ContentFile
 from django.conf import settings
 from PIL import ImageDraw, ImageFont # Import ImageDraw and ImageFont here
@@ -123,69 +125,132 @@ import re
 
 # ... (other imports) ...
 
+# def save_message(request, unique_key):
+#     """
+#     Handles the form submission for saving a message and its styling to a QR code.
+#     """
+#     qr_data = get_object_or_404(QRCodeData, unique_key=unique_key)
+
+#     if request.method == 'POST':
+#         print("--- POST Request Received ---")
+#         print("POST Data Keys:", request.POST.keys()) # Check for 'cropped_image_data'
+#         print("FILES Data:", request.FILES)
+
+#         message = request.POST.get('message', '').strip()
+#         text_color = request.POST.get('text_color', '#4a2c2a')
+#         background_type = request.POST.get('background_type', 'color')
+#         background_value = request.POST.get('background_value', '#fff8e1')
+
+#         # --- NEW LOGIC FOR HANDLING BASE64 IMAGE ---
+#         attached_image_base64 = request.POST.get('cropped_image_data')
+
+#         if not message:
+#             print("Error: Message is empty.")
+#             context = {
+#                 'qr_data': qr_data,
+#                 'error': 'Message cannot be empty.',
+#                 'background_type_choices': BACKGROUND_TYPE_CHOICES,
+#             }
+#             return render(request, 'enter_message.html', context)
+
+#         # Update the QR code data object
+#         qr_data.message = message
+#         qr_data.text_color = text_color
+#         qr_data.background_type = background_type
+#         qr_data.background_value = background_value
+
+#         if attached_image_base64:
+#             print("Received cropped image data. Processing...")
+#             # Clean up the Base64 string (e.g., remove 'data:image/png;base64,')
+#             data_uri_pattern = re.compile(r'^data:image/(png|jpeg|jpg);base64,')
+#             clean_base64_string = data_uri_pattern.sub('', attached_image_base64)
+#             image_data = base64.b64decode(clean_base64_string)
+
+#             # Create a Django ContentFile from the decoded data
+#             image_file = ContentFile(image_data, name=f'{qr_data.unique_key}_attached.png')
+            
+#             # Save the new image to the model field
+#             qr_data.attached_image.save(f'{qr_data.unique_key}_attached.png', image_file)
+#             print(f"Attached image saved as: {qr_data.attached_image.name}")
+        
+#         elif 'clear_attached_image' in request.POST:
+#             print("Clearing attached image.")
+#             qr_data.attached_image = None
+#             qr_data.save()
+#         else:
+#             print("No new image uploaded, and clear image not checked. Keeping existing image (if any).")
+#             # We still need to save other changes, so call save() here too if no image was involved
+#             qr_data.save()
+
+#         print("QR Data saved successfully!")
+#         return redirect('display_message', unique_key=unique_key)
+
+#     print("--- GET Request Received (or not a POST) ---")
+#     return redirect('enter_message_page', unique_key=unique_key)
+from django.contrib import messages  
+
 def save_message(request, unique_key):
     """
-    Handles the form submission for saving a message and its styling to a QR code.
+    View to save the personalized message and generate composite image
     """
+    if request.method != 'POST':
+        return redirect('display_message', unique_key=unique_key)
+    
     qr_data = get_object_or_404(QRCodeData, unique_key=unique_key)
-
-    if request.method == 'POST':
-        print("--- POST Request Received ---")
-        print("POST Data Keys:", request.POST.keys()) # Check for 'cropped_image_data'
-        print("FILES Data:", request.FILES)
-
+    
+    try:
+        # Get form data
         message = request.POST.get('message', '').strip()
-        text_color = request.POST.get('text_color', '#4a2c2a')
-        background_type = request.POST.get('background_type', 'color')
-        background_value = request.POST.get('background_value', '#fff8e1')
-
-        # --- NEW LOGIC FOR HANDLING BASE64 IMAGE ---
-        attached_image_base64 = request.POST.get('cropped_image_data')
-
-        if not message:
-            print("Error: Message is empty.")
-            context = {
-                'qr_data': qr_data,
-                'error': 'Message cannot be empty.',
-                'background_type_choices': BACKGROUND_TYPE_CHOICES,
-            }
-            return render(request, 'enter_message.html', context)
-
-        # Update the QR code data object
+        text_color = request.POST.get('text_color', '#333333')
+        font_family = request.POST.get('font_family', 'Lora')
+        font_size = int(request.POST.get('font_size', 24))
+        text_position_x = float(request.POST.get('text_position_x', 50))
+        text_position_y = float(request.POST.get('text_position_y', 50))
+        composite_image_data = request.POST.get('composite_image_data')
+        
+        # Update QR data with message and styling
         qr_data.message = message
         qr_data.text_color = text_color
-        qr_data.background_type = background_type
-        qr_data.background_value = background_value
-
-        if attached_image_base64:
-            print("Received cropped image data. Processing...")
-            # Clean up the Base64 string (e.g., remove 'data:image/png;base64,')
-            data_uri_pattern = re.compile(r'^data:image/(png|jpeg|jpg);base64,')
-            clean_base64_string = data_uri_pattern.sub('', attached_image_base64)
-            image_data = base64.b64decode(clean_base64_string)
-
-            # Create a Django ContentFile from the decoded data
-            image_file = ContentFile(image_data, name=f'{qr_data.unique_key}_attached.png')
-            
-            # Save the new image to the model field
-            qr_data.attached_image.save(f'{qr_data.unique_key}_attached.png', image_file)
-            print(f"Attached image saved as: {qr_data.attached_image.name}")
+        qr_data.font_family = font_family
+        qr_data.font_size = font_size
+        qr_data.text_position_x = text_position_x
+        qr_data.text_position_y = text_position_y
         
-        elif 'clear_attached_image' in request.POST:
-            print("Clearing attached image.")
-            qr_data.attached_image = None
-            qr_data.save()
-        else:
-            print("No new image uploaded, and clear image not checked. Keeping existing image (if any).")
-            # We still need to save other changes, so call save() here too if no image was involved
-            qr_data.save()
-
-        print("QR Data saved successfully!")
+        # Handle composite image if provided
+        if composite_image_data and composite_image_data.startswith('data:image'):
+            try:
+                # Extract base64 data
+                format_info, img_data = composite_image_data.split(';base64,')
+                img_bytes = base64.b64decode(img_data)
+                
+                # Save composite image
+                qr_data.attached_image.save(
+                    f"{unique_key}_composite.jpg",
+                    ContentFile(img_bytes),
+                    save=False
+                )
+            except Exception as e:
+                print(f"Error saving composite image: {e}")
+        
+        # Handle background image upload (fallback)
+        # if request.FILES.get('background_image'):
+        #     background_file = request.FILES['background_image']
+        #     qr_data.attached_image.save(
+        #         f"{unique_key}_bg_{background_file.name}",
+        #         background_file,
+        #         save=False
+        #     )
+            qr_data.background_type = 'image'
+        
+        qr_data.save()
+        
+        messages.success(request, 'Your sweet message has been saved successfully! 🍫')
         return redirect('display_message', unique_key=unique_key)
-
-    print("--- GET Request Received (or not a POST) ---")
-    return redirect('enter_message_page', unique_key=unique_key)
-
+        
+    except Exception as e:
+        messages.error(request, f'Error saving message: {str(e)}')
+        return redirect('display_message', unique_key=unique_key)
+    
 # You'll also need an 'enter_message' view if you don't have one:
 def enter_message_page(request, unique_key):
     """
@@ -203,24 +268,16 @@ def display_message_page(request, unique_key):
     """
     Renders the page to display the message associated with a QR code.
     """
-    qr_data_obj = get_object_or_404(QRCodeData, unique_key=unique_key)
+    qr_data = get_object_or_404(QRCodeData, unique_key=unique_key)
 
-    if not qr_data_obj.message:
-        # If no message exists yet, redirect to the enter message page
+    if not qr_data.message:
         return redirect('enter_message', unique_key=unique_key)
 
-    # Pass all relevant data from qr_data_obj to the template context
     context = {
-        'qr_data': {
-            'unique_key': qr_data_obj.unique_key,
-            'message': qr_data_obj.message,
-            'text_color': qr_data_obj.text_color,
-            'background_type': qr_data_obj.background_type,
-            'background_value': qr_data_obj.background_value,
-            'attached_image': qr_data_obj.attached_image.url if qr_data_obj.attached_image else '',
-        }
+        'qr_data': qr_data  # 🔥 Pass model instance, not a dict
     }
     return render(request, 'display_message.html', context)
+
 
 def download_qr(request, unique_key):
     """
@@ -240,3 +297,23 @@ def download_qr(request, unique_key):
     else:
         raise Http404("No QR code image associated with this key.")
 
+
+def compose_message(request):
+    if request.method == "POST":
+        text_blocks = json.loads(request.POST.get('text_blocks'))
+        image_data = request.POST.get('final_image')
+
+        # Decode the base64 image
+        format, imgstr = image_data.split(';base64,') 
+        ext = format.split('/')[-1]
+        img_bytes = base64.b64decode(imgstr)
+
+        # Save to model
+        qr = QRCodeData()
+        qr.text_blocks = text_blocks
+        qr.image.save(f'final_composed.{ext}', ContentFile(img_bytes))
+        qr.save()
+
+        return render(request, 'done.html', {'image_url': qr.image.url})
+    
+    return render(request, 'compose.html')

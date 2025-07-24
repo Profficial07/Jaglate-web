@@ -5,684 +5,563 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Craft Your Sweet Message - Jaglate</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@400;500;700&family=Lora&family=Montserrat&family=Pacifico&family=Caveat&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
     <style>
+        /* Base styles */
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(to bottom right, #f8e7d2, #d2a679); /* Chocolate-like gradient */
+            background: linear-gradient(to bottom right, #f8e7d2, #d2a679);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
             min-height: 100vh;
-            padding: 0;
             margin: 0;
-            box-sizing: border-box;
             overflow-x: hidden;
-            position: relative;
         }
-
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.05' fill-rule='evenodd'%3E%3Ccircle cx='30' cy='30' r='10'/%3E%3C/g%3E%3C/svg%3E");
-            background-repeat: repeat;
-            opacity: 0.1;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        main {
-            flex-grow: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            z-index: 1;
-        }
-
+        main { flex-grow: 1; display: flex; justify-content: center; align-items: center; padding: 20px; }
         .container {
             background-color: #ffffff;
-            padding: 40px;
+            padding: 20px;
             border-radius: 16px;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
             width: 100%;
-            max-width: 600px; /* Increased max-width for more controls */
+            max-width: 500px;
             text-align: center;
-            animation: fadeInScale 0.7s ease-out forwards;
-            position: relative; /* For preview positioning */
         }
+        
+        /* Navbar & Footer */
+        .navbar { background-color: #6a3805; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
+        .navbar-brand { font-family: 'Dancing Script', cursive; font-size: 2.2em; font-weight: 700; color: #ffd700; text-decoration: none; }
+        .navbar-links { display: flex; gap: 15px; }
+        .navbar-links a { color: white; text-decoration: none; font-weight: 500; transition: color 0.3s ease; }
+        .navbar-links a:hover { color: #ffd700; }
+        .footer { background-color: #6a3805; color: rgba(255, 255, 255, 0.8); padding: 20px; text-align: center; font-size: 0.9em; }
+        .footer a { color: #ffd700; text-decoration: none; }
 
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        /* Navbar Styles */
-        .navbar {
-            background-color: #6a3805; /* Dark chocolate */
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-            width: 100%;
-            flex-wrap: wrap;
-        }
-        .navbar-brand {
-            font-family: 'Dancing Script', cursive;
-            font-size: 2.2em;
-            font-weight: 700;
-            color: #ffd700; /* Gold */
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-            text-decoration: none;
-            margin-right: 20px;
-        }
-        .navbar-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        .navbar-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-        .navbar-links a:hover {
-            color: #ffd700;
-        }
-
-        /* Footer Styles */
-        .footer {
-            background-color: #6a3805;
-            color: rgba(255, 255, 255, 0.8);
-            padding: 20px;
-            text-align: center;
-            font-size: 0.9em;
-            width: 100%;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15);
-        }
-        .footer a {
-            color: #ffd700;
-            text-decoration: none;
-            margin: 0 5px;
-        }
-        .footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Mobile specific adjustments for Navbar, Container, etc. */
-        @media (max-width: 640px) {
-            .navbar {
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 15px;
-            }
-            .navbar-brand {
-                margin-bottom: 10px;
-                font-size: 1.8em;
-            }
-            .navbar-links {
-                width: 100%;
-                justify-content: center;
-                gap: 10px;
-            }
-            .navbar-links a {
-                margin: 0 5px;
-                font-size: 0.9em;
-            }
-            .container {
-                padding: 25px; /* Reduce padding on mobile */
-            }
-        }
-
-        /* Funky button styles */
-        .funky-button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px 25px;
-            border-radius: 9999px; /* Pill shape */
-            font-weight: 600;
-            font-size: 1.05em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            text-decoration: none;
-        }
-
-        .funky-button-primary {
-            background: linear-gradient(to right, #6a3805, #8b4513); /* Chocolate gradient */
-            color: #fff;
-            border: 2px solid #b8860b; /* Gold border */
-        }
-        .funky-button-primary:hover {
-            background: linear-gradient(to right, #8b4513, #6a3805);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-            transform: translateY(-2px);
-        }
-
-        textarea {
-            font-family: 'Lora', serif; /* Consistent font for message input */
-            font-size: 1.1em;
-            padding: 15px; /* More padding for input */
-            border-radius: 8px; /* Rounded corners */
-            border: 2px solid #d2a679; /* Chocolate border */
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        textarea:focus {
-            outline: none;
-            border-color: #8b4513; /* Darker chocolate on focus */
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1), 0 0 0 3px rgba(139, 69, 19, 0.2); /* Focus ring */
-        }
-
-        /* --- New/Modified Styles for Enhanced UI --- */
-
-        .message-preview {
+        /* Editor UI */
+        #editor-area {
             position: relative;
-            min-height: 200px; /* Ensure space for preview */
-            border: 2px dashed #d2a679;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden; /* Hide overflowing parts of background image */
-            transition: all 0.3s ease;
-            color: #333; /* Default text color */
-            font-size: 1.2em;
-            font-family: 'Lora', serif;
-            padding: 20px;
-            word-break: break-word; /* Ensure long words wrap */
-            text-align: center;
-            background-size: cover; /* For background image */
-            background-position: center; /* For background image */
-        }
-
-        .message-preview.has-image {
-            display: block; /* Adjust for image within preview */
-        }
-
-        .message-preview img {
-            max-width: 100%;
-            max-height: 100%;
-            display: block;
-            object-fit: contain; /* Ensure image fits */
+            width: 100%;
             margin: 0 auto;
         }
 
-        .preview-text {
-            z-index: 2; /* Ensure text is above background image */
+        #canvas-preview {
             position: relative;
-            background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent background for text on image */
-            padding: 8px 15px;
-            border-radius: 8px;
-            word-break: break-word;
-        }
-
-        .control-group {
-            background-color: #fefefe;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #eee;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            text-align: left; /* Align controls to the left within their group */
-        }
-
-        .color-picker-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .color-palette {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-top: 10px;
-        }
-        .color-swatch {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: border-color 0.2s ease, transform 0.2s ease;
-        }
-        .color-swatch.selected {
-            border-color: #8b4513; /* Dark chocolate border for selected */
-            transform: scale(1.1);
-        }
-
-        .bg-options-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .bg-option {
-            height: 80px;
-            border-radius: 8px;
-            cursor: pointer;
-            border: 2px solid transparent;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background-color: #f0f0f0;
+            border-radius: 12px;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
             background-size: cover;
             background-position: center;
-            transition: border-color 0.2s ease, transform 0.2s ease;
+            border: 2px solid #d2a679;
         }
-        .bg-option.selected {
-            border-color: #8b4513;
-            transform: scale(1.05);
-        }
-        .bg-option-color {
-            width: 100%;
-            height: 100%;
-            border-radius: 6px;
+        
+        #preview-image {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
         }
 
-        .image-upload-area {
-            border: 2px dashed #d2a679;
+        #text-overlay {
+            position: absolute;
+            cursor: move;
+            padding: 10px 15px;
             border-radius: 8px;
-            padding: 20px;
+            font-family: 'Lora', serif;
+            font-size: 24px;
+            color: #333333;
             text-align: center;
-            cursor: pointer;
-            transition: background-color 0.2s ease, border-color 0.2s ease;
+            line-height: 1.3;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            max-width: 90%;
+            word-wrap: break-word;
+            user-select: none;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
         }
-        .image-upload-area:hover {
-            background-color: #fefdfb;
-            border-color: #8b4513;
+        
+        /* Hidden canvas for composite generation */
+        #hidden-canvas {
+            display: none;
         }
-
-        .image-preview-container {
-            position: relative;
-            max-width: 100%;
-            max-height: 300px;
-            overflow: hidden;
+        
+        /* Toolbar */
+        #toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 12px;
             margin-top: 15px;
-            display: none; /* Hidden by default, shown when image uploaded */
+            border: 1px solid #e0e0e0;
         }
-        .image-preview-container img {
-            display: block;
-            max-width: 100%;
-        }
-
-        .crop-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
+        
+        .toolbar-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 100;
-            visibility: hidden;
-            opacity: 0;
-            transition: visibility 0s, opacity 0.3s ease;
+            transition: background-color 0.2s;
         }
-        .crop-modal.show {
-            visibility: visible;
-            opacity: 1;
+        .toolbar-btn:hover { background-color: #e9ecef; }
+        .toolbar-btn svg { width: 24px; height: 24px; }
+        .toolbar-btn input[type="color"] {
+            width: 28px; height: 28px; border: none; padding: 0;
+            background: none; cursor: pointer;
         }
-        .crop-modal-content {
-            background-color: white;
-            padding: 25px;
-            border-radius: 12px;
-            max-width: 90%;
-            max-height: 90%;
-            overflow: auto;
+        
+        /* Font size slider */
+        .font-size-container {
             display: flex;
-            flex-direction: column;
             align-items: center;
+            gap: 8px;
         }
-        .crop-container {
-            max-width: 500px; /* Adjust as needed */
-            max-height: 400px; /* Adjust as needed */
-            margin-bottom: 20px;
+        .font-size-container input[type="range"] {
+            width: 80px;
         }
-        .crop-container img {
-            display: block;
-            max-width: 100%;
+        
+        /* Popups for Toolbar */
+        .popup {
+            display: none;
+            position: absolute;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 10px;
+            z-index: 10;
         }
+
+        /* Font Selector Popup */
+        #font-selector { display: flex; flex-direction: column; gap: 5px; width: 180px; }
+        .font-option {
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .font-option:hover { background-color: #f0f0f0; }
+        .font-option.selected { background-color: #6a3805; color: white; }
+
+        /* Emoji Popup */
+        #emoji-picker { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; }
+        .emoji { cursor: pointer; font-size: 24px; text-align: center; padding: 5px; border-radius: 4px; transition: background-color 0.2s; }
+        .emoji:hover { background-color: #f0f0f0; }
+
+        /* Modal Styles */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal.show { display: flex; }
+        .modal-content { background: white; padding: 25px; border-radius: 12px; max-width: 90%; max-height: 90vh; overflow: auto; }
+
+        /* Button */
+        .funky-button {
+            display: inline-flex; align-items: center; justify-content: center; padding: 12px 25px;
+            border-radius: 9999px; font-weight: 600; font-size: 1.05em; cursor: pointer;
+            transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            background: linear-gradient(to right, #6a3805, #8b4513); color: #fff;
+            border: 2px solid #b8860b;
+        }
+        .funky-button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+
+        /* Processing indicator */
+        .processing {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
     </style>
 </head>
 <body>
     <header class="navbar">
-        <a href="{% url 'generate_qr_page' %}" class="navbar-brand">Jaglate Wishes</a>
+        <a href="#" class="navbar-brand">Jaglate Wishes</a>
         <nav class="navbar-links">
-            <a href="{% url 'generate_qr_page' %}">Generate QR</a>
+            <a href="#">Generate QR</a>
             <a href="#">About Us</a>
-            <a href="#">Contact</a>
         </nav>
     </header>
 
     <main>
         <div class="container">
-            <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-6">
-                <span class="dancing-script text-4xl sm:text-5xl text-amber-700 block mb-2">Craft Your Sweet Message!</span>
-                Personalize Your Wish
-            </h1>
-            <p class="text-lg sm:text-xl text-gray-600 mb-8">For QR Code: <span class="font-semibold text-blue-600">{{ qr_data.unique_key }}</span></p>
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">Personalize Your Wish</h1>
+            <p class="text-lg text-gray-600 mb-6">For: <span class="font-semibold text-blue-600">{{ qr_data.unique_key }}</span></p>
 
-            {% if error %}
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md relative mb-4" role="alert">
-                    <strong class="font-bold">Error!</strong>
-                    <span class="block sm:inline">{{ error }}</span>
-                </div>
-            {% endif %}
-
-            <form id="messageForm" method="post" action="{% url 'save_message' qr_data.unique_key %}" class="flex flex-col gap-6">
+            <form id="messageForm" method="post" action="{% url 'save_message' qr_data.unique_key %}" enctype="multipart/form-data">
                 {% csrf_token %}
+                
+                <textarea name="message" id="messageInput" rows="3" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-4 focus:border-amber-700 outline-none" placeholder="Type your sweet message here..."></textarea>
 
-                <div id="messagePreview" class="message-preview">
-                    <span id="previewText">Type your sweet message here...</span>
-                    <img id="previewImage" src="" alt="Attached Image" class="hidden">
-                </div>
-
-                <textarea name="message" id="messageInput" rows="4" class="w-full" placeholder="Type your wish or message here..."></textarea>
-
-                <div class="control-group">
-                    <h3 class="text-xl font-semibold text-gray-700 mb-3">Text Style</h3>
-                    <div class="color-picker-wrapper">
-                        <label for="textColor">Text Color:</label>
-                        <input type="color" id="textColor" name="text_color" value="#333333" class="w-10 h-10 rounded-md cursor-pointer">
+                <div id="editor-area">
+                    <div id="canvas-preview">
+                        <img id="preview-image" src="" alt="Background">
+                        <div id="text-overlay">Your Message</div>
                     </div>
-                    <div class="color-palette">
-                        <div class="color-swatch" style="background-color: #333333;" data-color="#333333"></div>
-                        <div class="color-swatch" style="background-color: #FFFFFF; border: 1px solid #ddd;" data-color="#FFFFFF"></div>
-                        <div class="color-swatch" style="background-color: #FF0000;" data-color="#FF0000"></div>
-                        <div class="color-swatch" style="background-color: #0000FF;" data-color="#0000FF"></div>
-                        <div class="color-swatch" style="background-color: #008000;" data-color="#008000"></div>
-                        <div class="color-swatch" style="background-color: #FFD700;" data-color="#FFD700"></div>
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <h3 class="text-xl font-semibold text-gray-700 mb-3">Background Options</h3>
-                    <div class="flex items-center gap-4 mb-4">
-                        <label for="bgColor">Solid Color:</label>
-                        <input type="color" id="bgColor" name="bg_color" value="#FDFDFD" class="w-10 h-10 rounded-md cursor-pointer">
-                        <button type="button" id="clearBgColor" class="text-sm text-red-500 hover:underline">Clear</button>
-                    </div>
-                    <p class="text-sm text-gray-500 mb-2">Or choose a predefined background:</p>
-                    <div class="bg-options-grid" id="backgroundOptions">
-                        <div class="bg-option bg-option-color selected" style="background-color: #FDFDFD;" data-bg-type="color" data-bg-value="#FDFDFD"></div>
-                        <div class="bg-option bg-option-color" style="background-color: #FFD2A6;" data-bg-type="color" data-bg-value="#FFD2A6"></div>
-                        <div class="bg-option bg-option-color" style="background-color: #A6D2FF;" data-bg-type="color" data-bg-value="#A6D2FF"></div>
-                        <div class="bg-option bg-option-color" style="background-color: #A6FFD2;" data-bg-type="color" data-bg-value="#A6FFD2"></div>
-                        <div class="bg-option" style="background-image: url('https://via.placeholder.com/150/f0f0f0/808080?text=Pattern1');" data-bg-type="image" data-bg-value="https://via.placeholder.com/150/f0f0f0/808080?text=Pattern1"></div>
-                        <div class="bg-option" style="background-image: url('https://via.placeholder.com/150/d2a679/ffffff?text=Pattern2');" data-bg-type="image" data-bg-value="https://via.placeholder.com/150/d2a679/ffffff?text=Pattern2"></div>
+                    
+                    <div id="toolbar">
+                        <button type="button" id="upload-btn" class="toolbar-btn" title="Set Background">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>
+                        </button>
+                        <button type="button" id="font-btn" class="toolbar-btn" title="Change Font">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.898 20.624l-.219-1.036a3.375 3.375 0 00-2.455-2.455l-1.036-.219l1.036-.219a3.375 3.375 0 002.455-2.455l.219-1.036l.219 1.036a3.375 3.375 0 002.456 2.455l1.035.219l-1.035.219a3.375 3.375 0 00-2.456 2.455l-.219 1.036z" /></svg>
+                        </button>
+                        <button type="button" class="toolbar-btn" title="Text Color">
+                            <input type="color" id="textColor" value="#333333">
+                        </button>
+                        <div class="font-size-container">
+                            <span title="Font Size">A</span>
+                            <input type="range" id="fontSize" min="12" max="48" value="24" title="Font Size">
                         </div>
-                </div>
-
-                <div class="control-group">
-                    <h3 class="text-xl font-semibold text-gray-700 mb-3">Attach Image</h3>
-                    <div id="imageUploadArea" class="image-upload-area">
-                        <input type="file" id="imageUpload" accept="image/*" class="hidden">
-                        <p class="text-gray-500"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mb-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                          </svg>Drag & Drop or Click to Upload Image</p>
-                    </div>
-                    <div id="imagePreviewContainer" class="image-preview-container">
-                        <img id="uploadedImagePreview" src="#" alt="Image Preview">
-                        <button type="button" id="removeImage" class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 text-xs">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                              </svg>
+                        <button type="button" id="emoji-btn" class="toolbar-btn" title="Add Emoji">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9 9.75h.008v.008H9V9.75zm6 0h.008v.008H15V9.75z" /></svg>
                         </button>
                     </div>
-                    <input type="hidden" name="cropped_image_data" id="croppedImageData">
+
+                    <div id="font-selector" class="popup">
+                        <div class="font-option selected" style="font-family: 'Lora', serif;" data-font="Lora">Lora (Default)</div>
+                        <div class="font-option" style="font-family: 'Montserrat', sans-serif;" data-font="Montserrat">Montserrat</div>
+                        <div class="font-option" style="font-family: 'Pacifico', cursive;" data-font="Pacifico">Pacifico</div>
+                        <div class="font-option" style="font-family: 'Caveat', cursive;" data-font="Caveat">Caveat</div>
+                    </div>
+                    <div id="emoji-picker" class="popup">
+                        <span class="emoji">🍫</span><span class="emoji">❤️</span><span class="emoji">🎉</span>
+                        <span class="emoji">🎂</span><span class="emoji">✨</span><span class="emoji">😊</span>
+                        <span class="emoji">😂</span><span class="emoji">😍</span><span class="emoji">👍</span>
+                    </div>
+
                 </div>
 
-                <button type="submit" class="funky-button funky-button-primary">
+                <!-- Hidden canvas for composite image generation -->
+                <canvas id="hidden-canvas" width="500" height="500"></canvas>
+
+                <!-- Form inputs -->
+                <input type="file" id="imageUpload" name="background_image" class="hidden" accept="image/*">
+                <input type="hidden" name="composite_image_data" id="compositeImageData">
+                <input type="hidden" name="text_color" id="finalTextColor" value="#333333">
+                <input type="hidden" name="font_family" id="finalFontFamily" value="Lora">
+                <input type="hidden" name="font_size" id="finalFontSize" value="24">
+                <input type="hidden" name="text_position_x" id="finalTextPosX" value="50">
+                <input type="hidden" name="text_position_y" id="finalTextPosY" value="50">
+
+                <button type="submit" class="funky-button w-full mt-6" id="submitBtn">
                     🍫 Submit Sweet Message
                 </button>
             </form>
         </div>
     </main>
 
-    <div id="cropModal" class="crop-modal">
-        <div class="crop-modal-content">
+    <div id="cropModal" class="modal">
+        <div class="modal-content">
             <h2 class="text-2xl font-bold mb-4">Crop Image</h2>
-            <div class="crop-container">
-                <img id="imageToCrop" src="" alt="Image to Crop">
+            <div><img id="imageToCrop" src="" alt="Crop Preview" style="max-width: 100%;"></div>
+            <div class="mt-4">
+                <button type="button" id="cropButton" class="funky-button">Crop & Apply</button>
+                <button type="button" id="cancelCrop" class="ml-2 text-gray-600">Cancel</button>
             </div>
-            <button type="button" id="cropButton" class="funky-button funky-button-primary mt-4">Crop & Apply</button>
-            <button type="button" id="cancelCrop" class="mt-2 text-gray-600 hover:text-gray-800">Cancel</button>
         </div>
     </div>
-
-    <footer class="footer">
-        <p>&copy; 2024 Jaglate. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
-    </footer>
+    
+    <footer class="footer">&copy; 2024 Jaglate. All rights reserved.</footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const messageInput = document.getElementById('messageInput');
-            const previewText = document.getElementById('previewText');
-            const messagePreview = document.getElementById('messagePreview');
-            const textColorInput = document.getElementById('textColor');
-            const colorSwatches = document.querySelectorAll('.color-swatch');
-            const bgColorInput = document.getElementById('bgColor');
-            const clearBgColorButton = document.getElementById('clearBgColor');
-            const backgroundOptions = document.getElementById('backgroundOptions');
-            const imageUploadArea = document.getElementById('imageUploadArea');
-            const imageUploadInput = document.getElementById('imageUpload');
-            const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-            const uploadedImagePreview = document.getElementById('uploadedImagePreview');
-            const removeImageButton = document.getElementById('removeImage');
-            const previewImage = document.getElementById('previewImage'); // For the main preview area
-            const cropModal = document.getElementById('cropModal');
-            const imageToCrop = document.getElementById('imageToCrop');
-            const cropButton = document.getElementById('cropButton');
-            const cancelCropButton = document.getElementById('cancelCrop');
-            const croppedImageDataInput = document.getElementById('croppedImageData'); // Hidden input for cropped data
+    document.addEventListener('DOMContentLoaded', function() {
+        // Element references
+        const messageInput = document.getElementById('messageInput');
+        const textOverlay = document.getElementById('text-overlay');
+        const canvasPreview = document.getElementById('canvas-preview');
+        const previewImage = document.getElementById('preview-image');
+        const hiddenCanvas = document.getElementById('hidden-canvas');
+        const hiddenCtx = hiddenCanvas.getContext('2d');
+        
+        // Toolbar buttons and popups
+        const uploadBtn = document.getElementById('upload-btn');
+        const imageUploadInput = document.getElementById('imageUpload');
+        const fontBtn = document.getElementById('font-btn');
+        const fontSelector = document.getElementById('font-selector');
+        const textColorInput = document.getElementById('textColor');
+        const fontSizeInput = document.getElementById('fontSize');
+        const emojiBtn = document.getElementById('emoji-btn');
+        const emojiPicker = document.getElementById('emoji-picker');
 
-            let cropper; // Variable to hold the Cropper instance
-            let selectedBgType = 'color'; // 'color' or 'image'
-            let selectedBgValue = '#FDFDFD'; // Default white
+        // Form elements
+        const messageForm = document.getElementById('messageForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const compositeImageDataInput = document.getElementById('compositeImageData');
+        const finalTextColor = document.getElementById('finalTextColor');
+        const finalFontFamily = document.getElementById('finalFontFamily');
+        const finalFontSize = document.getElementById('finalFontSize');
+        const finalTextPosX = document.getElementById('finalTextPosX');
+        const finalTextPosY = document.getElementById('finalTextPosY');
 
-            // --- Real-time Preview Update ---
-            messageInput.addEventListener('input', function() {
-                previewText.textContent = messageInput.value || 'Type your sweet message here...';
-            });
+        // Modal elements
+        const cropModal = document.getElementById('cropModal');
+        const imageToCrop = document.getElementById('imageToCrop');
+        const cropButton = document.getElementById('cropButton');
+        const cancelCropButton = document.getElementById('cancelCrop');
 
-            // --- Text Color Change ---
-            textColorInput.addEventListener('input', function() {
-                previewText.style.color = textColorInput.value;
-                // Remove selected class from swatches if custom color is picked
-                colorSwatches.forEach(swatch => swatch.classList.remove('selected'));
-            });
+        let cropper;
+        let currentBackgroundImageData = null;
 
-            colorSwatches.forEach(swatch => {
-                swatch.addEventListener('click', function() {
-                    const color = this.dataset.color;
-                    textColorInput.value = color;
-                    previewText.style.color = color;
+        // --- Text Input and Preview ---
+        messageInput.addEventListener('input', () => {
+            const message = messageInput.value || 'Your Message';
+            textOverlay.textContent = message;
+            updateTextPosition(); // Update position after content change
+        });
 
-                    // Update selected swatch
-                    colorSwatches.forEach(s => s.classList.remove('selected'));
-                    this.classList.add('selected');
-                });
-            });
+        // --- Toolbar Logic ---
 
-            // Set initial selected swatch
-            document.querySelector(`.color-swatch[data-color="${textColorInput.value}"]`)?.classList.add('selected');
-
-            // --- Background Options ---
-            bgColorInput.addEventListener('input', function() {
-                messagePreview.style.backgroundColor = bgColorInput.value;
-                messagePreview.style.backgroundImage = 'none'; // Clear any background image
-                selectedBgType = 'color';
-                selectedBgValue = bgColorInput.value;
-                // Deselect any background image options
-                document.querySelectorAll('.bg-option').forEach(option => option.classList.remove('selected'));
-                document.querySelector(`.bg-option-color[data-bg-value="${bgColorInput.value}"]`)?.classList.add('selected');
-            });
-
-            clearBgColorButton.addEventListener('click', function() {
-                bgColorInput.value = '#FDFDFD'; // Reset to default white
-                messagePreview.style.backgroundColor = '#FDFDFD';
-                messagePreview.style.backgroundImage = 'none';
-                selectedBgType = 'color';
-                selectedBgValue = '#FDFDFD';
-                document.querySelectorAll('.bg-option').forEach(option => option.classList.remove('selected'));
-                document.querySelector(`.bg-option-color[data-bg-value="#FDFDFD"]`)?.classList.add('selected');
-            });
-
-            backgroundOptions.addEventListener('click', function(event) {
-                const target = event.target.closest('.bg-option');
-                if (target) {
-                    document.querySelectorAll('.bg-option').forEach(option => option.classList.remove('selected'));
-                    target.classList.add('selected');
-
-                    selectedBgType = target.dataset.bgType;
-                    selectedBgValue = target.dataset.bgValue;
-
-                    if (selectedBgType === 'color') {
-                        messagePreview.style.backgroundColor = selectedBgValue;
-                        messagePreview.style.backgroundImage = 'none';
-                        bgColorInput.value = selectedBgValue; // Update color picker
-                    } else if (selectedBgType === 'image') {
-                        messagePreview.style.backgroundImage = `url('${selectedBgValue}')`;
-                        messagePreview.style.backgroundColor = 'transparent'; // Ensure color doesn't interfere
-                        bgColorInput.value = '#000000'; // Reset color picker to black or transparent
-                    }
+        // Function to close all popups
+        const closeAllPopups = (except = null) => {
+            [fontSelector, emojiPicker].forEach(popup => {
+                if (popup !== except) {
+                    popup.style.display = 'none';
                 }
             });
+        };
 
-            // Initialize background option selection
-            document.querySelector(`.bg-option[data-bg-value="${selectedBgValue}"]`)?.classList.add('selected');
-
-
-            // --- Image Attachment & Cropping ---
-            imageUploadArea.addEventListener('click', function() {
-                imageUploadInput.click();
-            });
-
-            imageUploadInput.addEventListener('change', function(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        imageToCrop.src = e.target.result;
-                        cropModal.classList.add('show');
-
-                        // Destroy previous cropper instance if exists
-                        if (cropper) {
-                            cropper.destroy();
-                        }
-
-                        // Initialize Cropper.js
-                        cropper = new Cropper(imageToCrop, {
-                            aspectRatio: 1, // You can change this (e.g., 16 / 9, NaN for free ratio)
-                            viewMode: 1,    // Restrict the crop box to not exceed the canvas
-                            autoCropArea: 0.8, // Initial crop area (80% of image)
-                            scalable: true,
-                            zoomable: true,
-                        });
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-
-            cropButton.addEventListener('click', function() {
-                if (cropper) {
-                    const canvas = cropper.getCroppedCanvas({
-                        width: 400, // Desired width for the cropped image
-                        height: 400, // Desired height
+        // Background Image Upload
+        uploadBtn.addEventListener('click', () => imageUploadInput.click());
+        imageUploadInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    imageToCrop.src = event.target.result;
+                    cropModal.classList.add('show');
+                    if (cropper) cropper.destroy();
+                    cropper = new Cropper(imageToCrop, {
+                        aspectRatio: 1,
+                        viewMode: 1,
                     });
-                    const croppedImageBase64 = canvas.toDataURL('image/png'); // Or 'image/jpeg'
-                    
-                    uploadedImagePreview.src = croppedImageBase64;
-                    imagePreviewContainer.classList.remove('hidden');
-                    imagePreviewContainer.style.display = 'block'; // Ensure it's block
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
 
-                    previewImage.src = croppedImageBase64;
-                    previewImage.classList.remove('hidden');
-                    previewText.style.display = 'block'; // Ensure text remains visible
+        cropButton.addEventListener('click', () => {
+            if (cropper) {
+                const canvas = cropper.getCroppedCanvas({ width: 500, height: 500 });
+                const croppedData = canvas.toDataURL('image/jpeg');
+                
+                previewImage.src = croppedData;
+                previewImage.style.display = 'block';
+                canvasPreview.style.backgroundColor = 'transparent';
+                currentBackgroundImageData = croppedData;
 
-                    messagePreview.classList.add('has-image'); // Add class to adjust layout if needed
-                    messagePreview.style.backgroundColor = 'transparent'; // Clear background color
-                    messagePreview.style.backgroundImage = 'none'; // Clear background image
-                    
-                    // Hide background options as image is present
-                    document.querySelector('.control-group:nth-of-type(3)').style.display = 'none';
-
-                    croppedImageDataInput.value = croppedImageBase64; // Set hidden input value for submission
-
-                    cropModal.classList.remove('show');
-                    cropper.destroy(); // Destroy cropper instance after cropping
-                }
-            });
-
-            cancelCropButton.addEventListener('click', function() {
                 cropModal.classList.remove('show');
-                if (cropper) {
-                    cropper.destroy();
-                }
-                imageUploadInput.value = ''; // Clear file input
-            });
+                cropper.destroy();
+            }
+        });
 
-            removeImageButton.addEventListener('click', function() {
-                uploadedImagePreview.src = '#';
-                imagePreviewContainer.classList.add('hidden');
-                imagePreviewContainer.style.display = 'none'; // Ensure it's none
-                previewImage.src = '';
-                previewImage.classList.add('hidden');
-                messagePreview.classList.remove('has-image');
-                // Restore original background settings
-                messagePreview.style.backgroundColor = selectedBgValue;
-                if (selectedBgType === 'image') {
-                     messagePreview.style.backgroundImage = `url('${selectedBgValue}')`;
-                }
-                // Show background options again
-                document.querySelector('.control-group:nth-of-type(3)').style.display = 'block';
-                croppedImageDataInput.value = ''; // Clear hidden input
-            });
+        cancelCropButton.addEventListener('click', () => {
+            cropModal.classList.remove('show');
+            if(cropper) cropper.destroy();
+            imageUploadInput.value = '';
+        });
 
-            // --- Form Submission ---
-            document.getElementById('messageForm').addEventListener('submit', function(event) {
-                // You might want to gather all customization data here
-                // before submitting, or rely on hidden inputs.
-                // For simplicity, we'll assume the hidden inputs are updated.
+        // Font Selection
+        fontBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isHidden = fontSelector.style.display === 'none' || !fontSelector.style.display;
+            closeAllPopups();
+            fontSelector.style.display = isHidden ? 'flex' : 'none';
+        });
 
-                // Example of creating hidden inputs dynamically for background/text styles
-                // if you don't want them static in HTML:
-                let textColorHiddenInput = document.createElement('input');
-                textColorHiddenInput.type = 'hidden';
-                textColorHiddenInput.name = 'final_text_color';
-                textColorHiddenInput.value = textColorInput.value;
-                this.appendChild(textColorHiddenInput);
-
-                let bgTypeHiddenInput = document.createElement('input');
-                bgTypeHiddenInput.type = 'hidden';
-                bgTypeHiddenInput.name = 'final_bg_type';
-                bgTypeHiddenInput.value = selectedBgType;
-                this.appendChild(bgTypeHiddenInput);
-
-                let bgValueHiddenInput = document.createElement('input');
-                bgValueHiddenInput.type = 'hidden';
-                bgValueHiddenInput.name = 'final_bg_value';
-                bgValueHiddenInput.value = selectedBgValue;
-                this.appendChild(bgValueHiddenInput);
+        document.querySelectorAll('.font-option').forEach(option => {
+            option.addEventListener('click', () => {
+                const font = option.dataset.font;
+                textOverlay.style.fontFamily = `'${font}', sans-serif`;
+                finalFontFamily.value = font;
+                document.querySelectorAll('.font-option').forEach(o => o.classList.remove('selected'));
+                option.classList.add('selected');
+                closeAllPopups();
             });
         });
+
+        // Text Color
+        textColorInput.addEventListener('input', () => {
+            textOverlay.style.color = textColorInput.value;
+            finalTextColor.value = textColorInput.value;
+        });
+
+        // Font Size
+        fontSizeInput.addEventListener('input', () => {
+            const size = fontSizeInput.value + 'px';
+            textOverlay.style.fontSize = size;
+            finalFontSize.value = fontSizeInput.value;
+        });
+
+        // Emoji Picker
+        emojiBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isHidden = emojiPicker.style.display === 'none' || !emojiPicker.style.display;
+            closeAllPopups();
+            emojiPicker.style.display = isHidden ? 'grid' : 'none';
+        });
+
+        document.querySelectorAll('.emoji').forEach(emoji => {
+            emoji.addEventListener('click', () => {
+                messageInput.value += emoji.textContent;
+                messageInput.dispatchEvent(new Event('input'));
+            });
+        });
+
+        // --- Draggable Text Logic ---
+        let isDragging = false;
+        let offsetX, offsetY;
+
+        function updateTextPosition() {
+            const canvasRect = canvasPreview.getBoundingClientRect();
+            const textRect = textOverlay.getBoundingClientRect();
+            
+            const finalX = ((textRect.left - canvasRect.left + textOverlay.offsetWidth / 2) / canvasRect.width) * 100;
+            const finalY = ((textRect.top - canvasRect.top + textOverlay.offsetHeight / 2) / canvasRect.height) * 100;
+            
+            finalTextPosX.value = Math.max(0, Math.min(100, finalX)).toFixed(2);
+            finalTextPosY.value = Math.max(0, Math.min(100, finalY)).toFixed(2);
+        }
+
+        textOverlay.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            const textRect = textOverlay.getBoundingClientRect();
+            offsetX = e.clientX - textRect.left;
+            offsetY = e.clientY - textRect.top;
+            textOverlay.style.cursor = 'grabbing';
+            document.body.style.userSelect = 'none';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            
+            const canvasRect = canvasPreview.getBoundingClientRect();
+            let x = e.clientX - canvasRect.left - offsetX;
+            let y = e.clientY - canvasRect.top - offsetY;
+
+            // Constrain within canvas bounds
+            x = Math.max(0, Math.min(x, canvasRect.width - textOverlay.offsetWidth));
+            y = Math.max(0, Math.min(y, canvasRect.height - textOverlay.offsetHeight));
+
+            textOverlay.style.left = `${x}px`;
+            textOverlay.style.top = `${y}px`;
+            textOverlay.style.transform = 'none'; // Remove center transform when dragging
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                textOverlay.style.cursor = 'move';
+                document.body.style.userSelect = '';
+                updateTextPosition();
+            }
+        });
+
+        // --- Composite Image Generation ---
+        function generateCompositeImage() {
+            return new Promise((resolve) => {
+                // Set canvas size
+                hiddenCanvas.width = 500;
+                hiddenCanvas.height = 500;
+                
+                // Clear canvas
+                hiddenCtx.clearRect(0, 0, 500, 500);
+                
+                // Draw background
+                if (currentBackgroundImageData) {
+                    const bgImg = new Image();
+                    bgImg.onload = () => {
+                        hiddenCtx.drawImage(bgImg, 0, 0, 500, 500);
+                        drawTextOnCanvas();
+                    };
+                    bgImg.src = currentBackgroundImageData;
+                } else {
+                    // Default background color
+                    hiddenCtx.fillStyle = '#f0f0f0';
+                    hiddenCtx.fillRect(0, 0, 500, 500);
+                    drawTextOnCanvas();
+                }
+                
+                function drawTextOnCanvas() {
+                    const message = messageInput.value || 'Your Message';
+                    const fontSize = parseInt(finalFontSize.value);
+                    const fontFamily = finalFontFamily.value;
+                    const textColor = finalTextColor.value;
+                    const posX = (parseFloat(finalTextPosX.value) / 100) * 500;
+                    const posY = (parseFloat(finalTextPosY.value) / 100) * 500;
+                    
+                    // Configure text style
+                    hiddenCtx.font = `${fontSize}px '${fontFamily}', sans-serif`;
+                    hiddenCtx.fillStyle = textColor;
+                    hiddenCtx.textAlign = 'center';
+                    hiddenCtx.textBaseline = 'middle';
+                    
+                    // Add text shadow
+                    hiddenCtx.shadowColor = 'rgba(0,0,0,0.1)';
+                    hiddenCtx.shadowBlur = 2;
+                    hiddenCtx.shadowOffsetX = 1;
+                    hiddenCtx.shadowOffsetY = 1;
+                    
+                    // Draw text (handle multi-line)
+                    const lines = message.split('\n');
+                    const lineHeight = fontSize * 1.3;
+                    const startY = posY - ((lines.length - 1) * lineHeight) / 2;
+                    
+                    lines.forEach((line, index) => {
+                        hiddenCtx.fillText(line, posX, startY + (index * lineHeight));
+                    });
+                    
+                    // Get composite image data
+                    const compositeDataURL = hiddenCanvas.toDataURL('image/jpeg', 0.9);
+                    resolve(compositeDataURL);
+                }
+            });
+        }
+
+        // --- Form Submission ---
+        messageForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Show processing state
+            submitBtn.classList.add('processing');
+            submitBtn.textContent = 'Processing...';
+            
+            try {
+                // Generate composite image
+                const compositeImage = await generateCompositeImage();
+                compositeImageDataInput.value = compositeImage;
+                
+                // Submit form
+                messageForm.submit();
+            } catch (error) {
+                console.error('Error generating composite image:', error);
+                alert('Error processing image. Please try again.');
+                
+                // Reset button state
+                submitBtn.classList.remove('processing');
+                submitBtn.textContent = '🍫 Submit Sweet Message';
+            }
+        });
+
+        // Close popups when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#toolbar') && !e.target.closest('.popup')) {
+                closeAllPopups();
+            }
+        });
+    });
     </script>
 </body>
 </html>

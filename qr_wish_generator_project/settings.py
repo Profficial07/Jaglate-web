@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
-import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -37,14 +36,12 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'qr_app',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -77,15 +74,16 @@ WSGI_APPLICATION = 'qr_wish_generator_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# your_project/settings.py
-# ...
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3', # Keep this as is
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'qrcode_generator_db',
+        'USER': 'root',
+        'PASSWORD': 'root',
+        'HOST': 'localhost',  # Change if using a remote server
+        'PORT': '3306',       # Default MySQL port
     }
 }
-# ...
 
 
 # Password validation
@@ -123,17 +121,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # Collect all static files here
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'), # Your app's static files
-]
-
-# Whitenoise configuration for serving static files
-# If you use Django's collectstatic, Whitenoise will find them in STATIC_ROOT
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 

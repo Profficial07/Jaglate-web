@@ -369,15 +369,31 @@
             <span class="emoji-icon">🎉🎂🍫</span>
             <h2 class="popup-header dancing-script">A Sweet Surprise for You!</h2>
             <div id="messageBox" class="message-box">
-                <div class="message-content-wrapper" id="messageContentWrapper">
-                    {{ qr_data.message }}
-                </div>
+                {% if qr_data.attached_image %}
+                    <img src="{{ qr_data.attached_image.url }}" alt="Personalized Message Image" class="w-full max-w-[500px] rounded-lg shadow-lg" />
+                {% else %}
+                    <div class="message-content-wrapper" id="messageContentWrapper">
+                        {{ qr_data.message }}
+                    </div>
+                {% endif %}
             </div>
+
+
         </div>
     </div>
     {% endif %}
 
     <script>
+        function showPopup() {
+            if (popupOverlay) {
+                if (!messageData.attachedImage) {
+                    applyMessageStyles();
+                }
+                popupOverlay.classList.add('active');
+                createConfetti();
+            }
+        }
+
         const popupOverlay = document.getElementById('birthdayPopupOverlay');
         const messageBox = document.getElementById('messageBox');
         const messageContentWrapper = document.getElementById('messageContentWrapper');
@@ -439,13 +455,13 @@
             }
         }
 
-        function showPopup() {
-            if (popupOverlay) {
-                applyMessageStyles(); // Apply styles right before showing the popup
-                popupOverlay.classList.add('active');
-                createConfetti();
-            }
-        }
+        // function showPopup() {
+        //     if (popupOverlay) {
+        //         applyMessageStyles(); // Apply styles right before showing the popup
+        //         popupOverlay.classList.add('active');
+        //         createConfetti();
+        //     }
+        // }
 
         function closePopup() {
             if (popupOverlay) {

@@ -8,4 +8,6 @@ urlpatterns = [
     path('qr/<str:unique_key>/save/', views.save_message, name='save_message'),
     path('qr/<str:unique_key>/display/', views.display_message_page, name='display_message'),
     path('qr/<str:unique_key>/download/', views.download_qr, name='download_qr'),
+    path('compose/', views.compose_message, name='compose_message'),
+    
 ]
