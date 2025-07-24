@@ -74,16 +74,15 @@ WSGI_APPLICATION = 'qr_wish_generator_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# your_project/settings.py
+# ...
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'qrcode_generator_db',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': 'localhost',  # Change if using a remote server
-        'PORT': '3306',       # Default MySQL port
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3', # Keep this as is
     }
 }
+# ...
 
 
 # Password validation
