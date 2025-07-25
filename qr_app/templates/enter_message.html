@@ -148,7 +148,7 @@
         }
 
         /* Font Selector Popup */
-        #font-selector { display: flex; flex-direction: column; gap: 5px; width: 180px; }
+        #font-selector { display: none; flex-direction: column; gap: 5px; width: 180px; }
         .font-option {
             padding: 8px 12px;
             border-radius: 6px;
@@ -159,7 +159,7 @@
         .font-option.selected { background-color: #6a3805; color: white; }
 
         /* Emoji Popup */
-        #emoji-picker { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; }
+        #emoji-picker { display: none; grid-template-columns: repeat(6, 1fr); gap: 5px; }
         .emoji { cursor: pointer; font-size: 24px; text-align: center; padding: 5px; border-radius: 4px; transition: background-color 0.2s; }
         .emoji:hover { background-color: #f0f0f0; }
 
@@ -468,6 +468,44 @@
                 updateTextPosition();
             }
         });
+
+        // Touch event handlers
+        textOverlay.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            const touch = e.touches[0];
+            const textRect = textOverlay.getBoundingClientRect();
+            offsetX = touch.clientX - textRect.left;
+            offsetY = touch.clientY - textRect.top;
+            textOverlay.style.cursor = 'grabbing';
+            document.body.style.userSelect = 'none';
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            const touch = e.touches[0];
+
+            const canvasRect = canvasPreview.getBoundingClientRect();
+            let x = touch.clientX - canvasRect.left - offsetX;
+            let y = touch.clientY - canvasRect.top - offsetY;
+
+            // Constrain within canvas bounds
+            x = Math.max(0, Math.min(x, canvasRect.width - textOverlay.offsetWidth));
+            y = Math.max(0, Math.min(y, canvasRect.height - textOverlay.offsetHeight));
+
+            textOverlay.style.left = `${x}px`;
+            textOverlay.style.top = `${y}px`;
+            textOverlay.style.transform = 'none';
+        });
+
+        document.addEventListener('touchend', () => {
+            if (isDragging) {
+                isDragging = false;
+                textOverlay.style.cursor = 'move';
+                document.body.style.userSelect = '';
+                updateTextPosition();
+            }
+        });
+
 
         // --- Composite Image Generation ---
         function generateCompositeImage() {
